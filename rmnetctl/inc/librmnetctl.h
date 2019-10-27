@@ -614,9 +614,14 @@ int rtrmnet_ctl_changevnd(rmnetctl_hndl_t *hndl, char *devname, char *vndname,
  */
 int rtrmnet_ctl_getvnd(rmnetctl_hndl_t *hndl, char *vndname,
 		       uint16_t *error_code, uint16_t *mux_id,
+#ifndef NO_UPLINK_FEATURES
 		       uint32_t *flagconfig, uint8_t *agg_count,
 		       uint16_t *agg_size, uint32_t *agg_time,
 		       uint8_t *features);
+#else
+		       uint32_t *flagconfig, uint16_t *agg_count,
+		       uint16_t *agg_size, uint32_t *agg_time);
+#endif
 
 /* @brief Public API to bridge a vnd and device
  * @details Message type is RTM_NEWLINK
@@ -655,7 +660,9 @@ int rtrmnet_set_uplink_aggregation_params(rmnetctl_hndl_t *hndl,
 					  uint8_t packet_count,
 					  uint16_t byte_count,
 					  uint32_t time_limit,
+#ifndef NO_UPLINK_FEATURES
 					  uint8_t features,
+#endif
 					  uint16_t *error_code);
 
 int rtrmnet_activate_flow(rmnetctl_hndl_t *hndl,

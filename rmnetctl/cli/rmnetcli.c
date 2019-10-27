@@ -374,16 +374,26 @@ static int rmnet_api_call(int argc, char *argv[])
 			_RMNETCLI_CHECKNULL(argv[1]);
 			uint32_t flags = 0;
 			uint16_t mux_id = 0;
+#ifndef NO_UPLINK_FEATURES
 			uint8_t agg_count = 0;
+#else
+			uint16_t *agg_count = 0;
+#endif
 			uint16_t agg_size = 0;
 			uint32_t agg_time = 0;
+#ifndef NO_UPLINK_FEATURES
 			uint8_t features = 0;
+#endif
 
 			return_code = rtrmnet_ctl_getvnd(handle, argv[1],
 							 &error_number,
 							 &mux_id, &flags,
 							 &agg_count, &agg_size,
+#ifndef NO_UPLINK_FEATURES
 							 &agg_time, &features);
+#else
+							 &agg_time);
+#endif
 			if (return_code == RMNETCTL_API_SUCCESS) {
 				printf("Configuration for device %s:\n", argv[1]);
 				printf("\tMux id: %d\n", mux_id);
@@ -392,7 +402,9 @@ static int rmnet_api_call(int argc, char *argv[])
 				printf("\t\tPacket limit: %d\n", agg_count);
 				printf("\t\tByte limit: %d\n", agg_size);
 				printf("\t\tTime limit (ns): %d\n", agg_time);
+#ifndef NO_UPLINK_FEATURES
 				printf("\t\tFeatures : 0x%02x\n", features);
+#endif
 			}
 		} else if (!strcmp(*argv, "dellink")) {
 			_RMNETCLI_CHECKNULL(argv[1]);
@@ -410,12 +422,18 @@ static int rmnet_api_call(int argc, char *argv[])
 			_RMNETCLI_CHECKNULL(argv[3]);
 			_RMNETCLI_CHECKNULL(argv[4]);
 			_RMNETCLI_CHECKNULL(argv[5]);
+#ifndef NO_UPLINK_FEATURES
 			_RMNETCLI_CHECKNULL(argv[6]);
+#endif
 
 			return_code = rtrmnet_set_uplink_aggregation_params(
 				handle, argv[1], argv[2], _STRTOUI8(argv[3]),
 				_STRTOUI16(argv[4]), _STRTOUI32(argv[5]),
+#ifndef NO_UPLINK_FEATURES
 				_STRTOUI8(argv[6]), &error_number);
+#else
+				&error_number);
+#endif
 		}
 		else if (!strcmp(*argv, "flowactivate")) {
 			_RMNETCLI_CHECKNULL(argv[1]);
